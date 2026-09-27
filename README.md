@@ -1,4 +1,4 @@
-# CWallet
+# Hexagon
 
 A modern cryptocurrency wallet app built on the TON (The Open Network) blockchain and providing secure and efficient management of digital assets was created by a university team as a course project to demonstrate our skills and teamwork.
 
