@@ -25,7 +25,9 @@ A modern cryptocurrency wallet app built on the TON (The Open Network) blockchai
 
 ## Tech Stack
 
-<!-- TODO: Add tech stack -->
+- front-end development: react.js
+- back-end development: node.js, python
+- core fork: ton-org/ton
 
 ## Team Roles & Contributions
 
