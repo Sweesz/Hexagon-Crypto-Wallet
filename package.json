@@ -6,6 +6,14 @@
     "buffer": "^6.0.3"
   },
   "devDependencies": {
-    "@ton/sandbox": "^0.45.0"
+    "@ton/sandbox": "^0.45.0",
+    "@types/node": "^26.6.5",
+    "jsdom": "^30.1.3",
+    "vitest": "^5.0.5"
+  },
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "coverage": "vitets run --coverage"
   }
 }
