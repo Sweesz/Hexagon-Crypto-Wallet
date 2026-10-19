@@ -1,4 +1,4 @@
-import { WalletContractV4 } from '@ton/ton';
+import { TonClient, WalletContractV4 } from '@ton/ton';
 import { Address } from '@ton/core';
 
 export interface WalletGenerationOptions {
@@ -17,3 +17,10 @@ export interface GeneratedWallet {
     mnemonics: string[];           // Массив из 24 слов
     wallet: WalletContractV4;      // Экземпляр контракта кошелька V4R2
 }
+
+export interface GetBalanceOptions {
+    endpoint?: string;
+    apiKey?: string;
+    client?: TonClient;
+}
+
