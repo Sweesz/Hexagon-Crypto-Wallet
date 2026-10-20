@@ -24,3 +24,18 @@ export interface GetBalanceOptions {
     client?: TonClient;
 }
 
+export interface SendTransactionParams {
+    senderMnemonics: string[];
+    receiverAddress: string | Address;
+    amount: bigint | number | string;
+    comment?: string;
+    bounceable?: boolean;
+}
+
+export interface SendTransactionOptions {
+    endpoint?: string;
+    apiKey?: string;
+    client?: TonClient;
+}
+
+
