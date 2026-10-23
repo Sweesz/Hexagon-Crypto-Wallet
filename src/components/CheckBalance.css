@@ -1,0 +1,40 @@
+.wallet-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  color: #1e293b;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.wallet-input:focus {
+  border-color: #2563eb;
+  background-color: #ffffff;
+}
+
+.balance-result {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.balance-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #166534;
+}
+
+.balance-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #15803d;
+}
