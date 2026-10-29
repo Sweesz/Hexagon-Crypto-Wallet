@@ -1,3 +1,6 @@
+![Languages](https://img.shields.io/github/languages/top/Sweesz/Hexagon-Crypto-Wallet)
+![Contributors](https://img.shields.io/github/contributors/Sweesz/Hexagon-Crypto-Wallet)
+[![GitHub Issues](https://img.shields.io/github/issues/Sweesz/Hexagon-Crypto-Wallet)](https://github.com/Sweesz/Hexagon-Crypto-Wallet/issues)
 # Hexagon
 
 A modern cryptocurrency wallet app built on the TON (The Open Network) blockchain and providing secure and efficient management of digital assets was created by a university team as a course project to demonstrate our skills and teamwork.
@@ -25,8 +28,8 @@ A modern cryptocurrency wallet app built on the TON (The Open Network) blockchai
 
 ## Tech Stack
 
-- front-end development: react.js
-- back-end development: node.js, python, typescript
+- front-end development: typescript
+- back-end development: typescript
 - core libs: [ton-org/ton-crypto](https://github.com/ton-org/ton-crypto), [ton-org/ton-core](https://github.com/ton-org/ton-core?ysclid=mve4mmiq2t238001718), [ton/ton](https://github.com/ton-blockchain?ysclid=mve4o18qn9228808233)
 - test lib: vitest
 ## Team Roles & Contributions
