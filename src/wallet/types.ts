@@ -36,6 +36,16 @@ export interface SendTransactionOptions {
     endpoint?: string;
     apiKey?: string;
     client?: TonClient;
+    password?: string;
+    timeout?: number;
+    sendMode?: number;
+    waitForConfirmation?: boolean;
+    pollingIntervalMs?: number;
+    maxWaitTimeoutMs?: number;
 }
 
-
+export interface SendTransactionResult {
+    hash: string;
+    boc: string;
+    seqno: number;
+}
