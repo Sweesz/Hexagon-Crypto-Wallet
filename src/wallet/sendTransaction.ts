@@ -2,6 +2,9 @@ import { Address, SendMode, toNano, fromNano, internal, external, beginCell, sto
 import { mnemonicToPrivateKey } from '@ton/crypto';
 import { TonClient, WalletContractV4, openContract } from '@ton/ton';
 import type { SendTransactionParams, SendTransactionOptions, SendTransactionResult } from './types';
+import { validateTransactionInput } from '../utils/validateTransaction';
+
+export { validateTransactionInput } from '../utils/validateTransaction';
 
 const DEFAULT_TESTNET_ENDPOINT = 'https://testnet.toncenter.com/api/v2/jsonRPC';
 
@@ -153,7 +156,24 @@ export async function sendTransaction(
         throw new Error('Invalid mnemonic: senderMnemonics must be an array of words');
     }
 
-    // 2. Validate input parameters
+    // 2. Validate input parameters synchronously before making any RPC or cryptographic API calls
+    const validationResult = validateTransactionInput({
+        receiverAddress: params?.receiverAddress,
+        amount: params?.amount,
+        comment: params?.comment,
+    });
+    if (!validationResult.isValid) {
+        if (validationResult.errors.receiverAddress) {
+            throw new Error(`Invalid TON address: ${validationResult.errors.receiverAddress}`);
+        }
+        if (validationResult.errors.amount) {
+            throw new Error(`Invalid amount: ${validationResult.errors.amount}`);
+        }
+        if (validationResult.errors.comment) {
+            throw new Error(`Invalid comment: ${validationResult.errors.comment}`);
+        }
+    }
+
     const mnemonics = parseMnemonics(params?.senderMnemonics);
     const parsedReceiver = parseReceiverAddress(params?.receiverAddress);
     const amountNano = parseAmountToNano(params?.amount);

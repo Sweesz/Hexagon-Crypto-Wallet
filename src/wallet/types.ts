@@ -49,3 +49,17 @@ export interface SendTransactionResult {
     boc: string;
     seqno: number;
 }
+
+export type {
+    ValidateTransactionInputParams,
+    ValidationOptions,
+    TransactionValidationResult,
+    TransactionValidationKey,
+    FieldErrorDetail,
+} from '../utils/validateTransaction';
+export {
+    TRANSACTION_VALIDATION_ERROR_KEYS,
+    DEFAULT_TRANSACTION_VALIDATION_MESSAGES,
+    validateTransactionInput,
+} from '../utils/validateTransaction';
+
