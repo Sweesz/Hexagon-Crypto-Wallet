@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { CreateWallet } from './components/CreateWallet';
 import { CheckBalance } from './components/CheckBalance';
+import { ToastProvider } from './components/Toast';
 import './App.css';
 
-export const App: React.FC = () => {
+export const AppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'create' | 'balance'>('balance');
 
   return (
@@ -29,6 +30,14 @@ export const App: React.FC = () => {
         {activeTab === 'create' ? <CreateWallet /> : <CheckBalance />}
       </main>
     </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
   );
 };
 

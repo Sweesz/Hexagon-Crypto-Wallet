@@ -1,11 +1,28 @@
 import { TonClient } from '@ton/ton';
 import { Address } from '@ton/core';
 import type { GetBalanceOptions } from './types';
+import { withRetry } from '../utils/retry';
+import { isTransientNetworkError } from '../utils/errorHandler';
 
 const TESTNET_ENDPOINT = 'https://testnet.toncenter.com/api/v2/jsonRPC';
 
 /**
+ * Checks if error indicates that account is uninitialized or not found in the blockchain.
+ */
+function isAccountNotFound(error: unknown): boolean {
+    const message = (error instanceof Error ? error.message : String(error)).toLowerCase();
+    const anyErr = error as any;
+    return (
+        message.includes('not found') ||
+        message.includes('cannot find') ||
+        message.includes('account not found') ||
+        anyErr?.response?.status === 404
+    );
+}
+
+/**
  * Получает баланс TON-адреса из Testnet в нанотонах (nano-tons).
+ * Включает механизм автоматического повтора (retry) при временных сбоях сети (макс. 3 попытки).
  *
  * @param walletAddress Строка адреса (friendly или raw) или экземпляр Address
  * @param options Опции подключения или строковый URL эндпоинта
@@ -42,20 +59,27 @@ export async function getWalletBalance(
             apiKey: opts.apiKey,
         });
 
-    // 3. Получение баланса и обработка ошибок
+    // 3. Получение баланса с механизмом retry для транзиентных сетевых сбоев
     try {
-        const balance = await client.getBalance(parsedAddress);
+        const balance = await withRetry(
+            async () => {
+                try {
+                    return await client.getBalance(parsedAddress);
+                } catch (err: unknown) {
+                    if (isAccountNotFound(err)) {
+                        return 0n;
+                    }
+                    throw err;
+                }
+            },
+            {
+                maxAttempts: 3,
+                isTransient: (err) => !isAccountNotFound(err) && isTransientNetworkError(err),
+            }
+        );
         return balance;
     } catch (error: any) {
-        const message = error?.message?.toLowerCase() || '';
-
-        // Обработка случая, когда адрес не найден / не инициализирован в блокчейне
-        if (
-            message.includes('not found') ||
-            message.includes('cannot find') ||
-            message.includes('account not found') ||
-            error?.response?.status === 404
-        ) {
+        if (isAccountNotFound(error)) {
             return 0n;
         }
 

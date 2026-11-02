@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Address, fromNano } from '@ton/core';
 import { getBalance } from '../wallet/getBalance';
+import { useToast } from './Toast/ToastContext';
+import { BalanceSkeleton } from './Skeleton/Skeleton';
+import { parseAppError } from '../utils/errorHandler';
+import { logger } from '../utils/logger';
 import './CheckBalance.css';
 
 /**
@@ -34,7 +38,11 @@ export const CheckBalance: React.FC = () => {
   const [balance, setBalance] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [technicalDetails, setTechnicalDetails] = useState<string | null>(null);
+  const [showTechnicalDetails, setShowTechnicalDetails] = useState<boolean>(false);
   const [isTimeout, setIsTimeout] = useState<boolean>(false);
+
+  const toast = useToast();
 
   const requestIdRef = useRef<number>(0);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -70,6 +78,7 @@ export const CheckBalance: React.FC = () => {
         setError(null);
       }
       setBalance(null);
+      setTechnicalDetails(null);
       return;
     }
 
@@ -79,6 +88,8 @@ export const CheckBalance: React.FC = () => {
     setIsLoading(true);
     if (!isAutoRefresh) {
       setError(null);
+      setTechnicalDetails(null);
+      setShowTechnicalDetails(false);
       setIsTimeout(false);
     }
 
@@ -87,7 +98,13 @@ export const CheckBalance: React.FC = () => {
       if (requestIdRef.current === currentRequestId) {
         setIsLoading(false);
         setIsTimeout(true);
-        setError('Request timed out after 10 seconds. Network failure.');
+        const timeoutMsg = 'Request timed out after 10 seconds. Network failure.';
+        setError(timeoutMsg);
+        setTechnicalDetails('TimeoutError: The request to TON RPC exceeded 10000ms threshold.');
+        toast.showError(timeoutMsg, {
+          message: 'Balance check timed out. Please verify connection and retry.',
+          technicalDetails: 'Request timed out after 10 seconds. Network failure.',
+        });
       }
     }, 10000);
 
@@ -99,6 +116,7 @@ export const CheckBalance: React.FC = () => {
         clearTimeoutTimer();
         setBalance(formatTonBalance(nanoBalance));
         setError(null);
+        setTechnicalDetails(null);
         setIsTimeout(false);
         setIsLoading(false);
       }
@@ -108,15 +126,25 @@ export const CheckBalance: React.FC = () => {
         setIsLoading(false);
         setIsTimeout(true);
 
+        const parsed = parseAppError(err);
+        setTechnicalDetails(parsed.technicalDetails || null);
+
         const rawMessage = err instanceof Error ? err.message : String(err);
+        let displayError = rawMessage;
         if (rawMessage.toLowerCase().includes('failed to fetch') || rawMessage.toLowerCase().includes('network')) {
-          setError('Network failure: unable to connect to TON network.');
-        } else {
-          setError(rawMessage);
+          displayError = 'Network failure: unable to connect to TON network.';
         }
+        setError(displayError);
+
+        // Show toast with human-readable error and optional technical details toggle
+        toast.showError(err, {
+          message: displayError,
+          technicalDetails: parsed.technicalDetails,
+        });
+        logger.error('Failed to fetch balance for address:', trimmed, err);
       }
     }
-  }, []);
+  }, [toast]);
 
   /**
    * Real-time balance fetching on address input change
@@ -243,18 +271,36 @@ export const CheckBalance: React.FC = () => {
           </button>
         </div>
 
-        {/* Loading Spinner during API call (Task 4) */}
+        {/* Loading Spinner and Skeleton during API call (Task 3 & 4) */}
         {isLoading && (
           <div className="balance-loading-container" data-testid="loading-spinner">
             <span className="spinner" />
             <span>Loading balance...</span>
+            <BalanceSkeleton dataTestId="balance-skeleton" />
           </div>
         )}
 
-        {/* User-friendly error message & Retry button (Task 5 & AC 3) */}
+        {/* User-friendly error message & Retry button & Technical details toggle (Task 5 & AC 2 & AC 3) */}
         {error && !isLoading && (
           <div className="wallet-section balance-error" data-testid="error-message">
             <span className="balance-error-message">{error}</span>
+            {technicalDetails && (
+              <div className="error-details-wrapper">
+                <button
+                  type="button"
+                  className="btn-details-toggle"
+                  data-testid="error-details-toggle"
+                  onClick={() => setShowTechnicalDetails((prev) => !prev)}
+                >
+                  {showTechnicalDetails ? 'Hide technical details' : 'Show technical details'}
+                </button>
+                {showTechnicalDetails && (
+                  <pre className="error-technical-details" data-testid="error-technical-details">
+                    {technicalDetails}
+                  </pre>
+                )}
+              </div>
+            )}
             {isTimeout && (
               <button
                 type="button"

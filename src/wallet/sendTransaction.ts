@@ -3,6 +3,8 @@ import { mnemonicToPrivateKey } from '@ton/crypto';
 import { TonClient, WalletContractV4, openContract } from '@ton/ton';
 import type { SendTransactionParams, SendTransactionOptions, SendTransactionResult } from './types';
 import { validateTransactionInput } from '../utils/validateTransaction';
+import { withRetry } from '../utils/retry';
+import { isTransientNetworkError } from '../utils/errorHandler';
 
 export { validateTransactionInput } from '../utils/validateTransaction';
 
@@ -201,12 +203,18 @@ export async function sendTransaction(
     // 6. Verify sender wallet deployment status (Task 5 & AC 3: "contract not deployed")
     let isDeployed = true;
     try {
-        if (typeof client.isContractDeployed === 'function') {
-            isDeployed = await client.isContractDeployed(walletContract.address);
-        } else if (typeof client.getContractState === 'function') {
-            const state = await client.getContractState(walletContract.address);
-            isDeployed = state?.state === 'active';
-        }
+        isDeployed = await withRetry(
+            async () => {
+                if (typeof client.isContractDeployed === 'function') {
+                    return await client.isContractDeployed(walletContract.address);
+                } else if (typeof client.getContractState === 'function') {
+                    const state = await client.getContractState(walletContract.address);
+                    return state?.state === 'active';
+                }
+                return true;
+            },
+            { maxAttempts: 3, isTransient: isTransientNetworkError }
+        );
     } catch (err: any) {
         const msg = String(err?.message || err).toLowerCase();
         if (
@@ -241,7 +249,10 @@ export async function sendTransaction(
     if (typeof client.getBalance === 'function') {
         let balance: bigint;
         try {
-            balance = await client.getBalance(walletContract.address);
+            balance = await withRetry(
+                async () => client.getBalance(walletContract.address),
+                { maxAttempts: 3, isTransient: isTransientNetworkError }
+            );
         } catch (err: any) {
             const msg = String(err?.message || err).toLowerCase();
             if (
@@ -269,7 +280,19 @@ export async function sendTransaction(
 
     let seqno: number;
     try {
-        seqno = await openedWallet.getSeqno();
+        seqno = await withRetry(
+            async () => openedWallet.getSeqno(),
+            {
+                maxAttempts: 3,
+                isTransient: (err) => {
+                    const msg = String((err as any)?.message || err).toLowerCase();
+                    if (msg.includes('seqno') || msg.includes('sequence') || msg.includes('33')) {
+                        return false;
+                    }
+                    return isTransientNetworkError(err);
+                },
+            }
+        );
     } catch (err: any) {
         const msg = String(err?.message || err).toLowerCase();
         if (msg.includes('seqno') || msg.includes('sequence') || msg.includes('33')) {
@@ -321,13 +344,37 @@ export async function sendTransaction(
 
     // 11. Send transfer on-chain via walletContract.sendTransfer() (Task 4)
     try {
-        await openedWallet.sendTransfer({
-            seqno,
-            secretKey: keyPair.secretKey,
-            messages: [internalMsg],
-            sendMode,
-            timeout,
-        });
+        await withRetry(
+            async () => {
+                await openedWallet.sendTransfer({
+                    seqno,
+                    secretKey: keyPair.secretKey,
+                    messages: [internalMsg],
+                    sendMode,
+                    timeout,
+                });
+            },
+            {
+                maxAttempts: 3,
+                isTransient: (err) => {
+                    const msg = String((err as any)?.message || err).toLowerCase();
+                    if (
+                        msg.includes('bad seqno') ||
+                        msg.includes('invalid seqno') ||
+                        msg.includes('exit_code: 33') ||
+                        msg.includes('exit code 33') ||
+                        msg.includes('insufficient') ||
+                        msg.includes('exit_code: 37') ||
+                        msg.includes('exit code 37') ||
+                        msg.includes('not deployed') ||
+                        msg.includes('uninitialized')
+                    ) {
+                        return false;
+                    }
+                    return isTransientNetworkError(err);
+                },
+            }
+        );
     } catch (err: any) {
         const msg = String(err?.message || err).toLowerCase();
 

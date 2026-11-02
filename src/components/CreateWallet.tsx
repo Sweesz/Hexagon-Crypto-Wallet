@@ -1,5 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { generateWallet } from '../wallet/generateWallet';
+import { useToast } from './Toast/ToastContext';
+import { Skeleton } from './Skeleton/Skeleton';
+import { parseAppError } from '../utils/errorHandler';
 import './CreateWallet.css';
 
 export const copyToClipboard = async (text: string): Promise<boolean> => {
@@ -42,19 +45,37 @@ export const CreateWallet: React.FC = () => {
   const [address, setAddress] = useState<string>('');
   const [mnemonic, setMnemonic] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [toast, setToast] = useState<string | null>(null);
+  const [fallbackToast, setFallbackToast] = useState<string | null>(null);
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const showToast = (message: string) => {
+  const toast = useToast();
+
+  const showToastFeedback = (message: string, isSuccess = true, errorObj?: unknown) => {
+    // 1. Notify global toast provider (auto-dismiss 4s for success as per AC 3)
+    if (isSuccess) {
+      toast.showSuccess(message, { duration: 4000 });
+    } else {
+      toast.showError(errorObj ?? message, { message });
+    }
+
+    // 2. Maintain local fallback toast for backwards compatibility with isolated unit tests
     if (toastTimeoutRef.current) {
       clearTimeout(toastTimeoutRef.current);
     }
-    setToast(message);
+    setFallbackToast(message);
     toastTimeoutRef.current = setTimeout(() => {
-      setToast(null);
+      setFallbackToast(null);
       toastTimeoutRef.current = null;
-    }, 2500);
+    }, 4000);
   };
+
+  useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleGenerate = async () => {
     setIsLoading(true);
@@ -62,6 +83,10 @@ export const CreateWallet: React.FC = () => {
       const wallet = await generateWallet();
       setAddress(wallet.address);
       setMnemonic(wallet.mnemonics.join(' '));
+      showToastFeedback('Wallet generated successfully!', true);
+    } catch (err: unknown) {
+      const parsed = parseAppError(err, 'Failed to generate new wallet');
+      showToastFeedback(parsed.userMessage, false, err);
     } finally {
       setIsLoading(false);
     }
@@ -69,11 +94,15 @@ export const CreateWallet: React.FC = () => {
 
   const handleCopyMnemonic = async () => {
     if (!mnemonic) return;
-    const copied = await copyToClipboard(mnemonic);
-    if (copied) {
-      showToast('Mnemonic copied to clipboard!');
-    } else {
-      showToast('Failed to copy mnemonic');
+    try {
+      const copied = await copyToClipboard(mnemonic);
+      if (copied) {
+        showToastFeedback('Mnemonic copied to clipboard!', true);
+      } else {
+        showToastFeedback('Failed to copy mnemonic', false);
+      }
+    } catch (err: unknown) {
+      showToastFeedback('Failed to copy mnemonic to clipboard', false, err);
     }
   };
 
@@ -98,6 +127,9 @@ export const CreateWallet: React.FC = () => {
           <label htmlFor="wallet-address" className="wallet-label">
             Wallet Address:
           </label>
+          {isLoading && (
+            <Skeleton variant="rectangular" width="100%" height="4px" dataTestId="address-skeleton" />
+          )}
           <input
             id="wallet-address"
             data-testid="wallet-address"
@@ -105,7 +137,7 @@ export const CreateWallet: React.FC = () => {
             type="text"
             readOnly
             value={address}
-            placeholder="Click 'Generate New Wallet' to create"
+            placeholder={isLoading ? "Generating address..." : "Click 'Generate New Wallet' to create"}
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
@@ -116,6 +148,9 @@ export const CreateWallet: React.FC = () => {
           <label htmlFor="mnemonic-phrase" className="wallet-label">
             Mnemonic Phrase (24 words):
           </label>
+          {isLoading && (
+            <Skeleton variant="rectangular" width="100%" height="4px" dataTestId="mnemonic-skeleton" />
+          )}
           <textarea
             id="mnemonic-phrase"
             data-testid="mnemonic-phrase"
@@ -123,7 +158,7 @@ export const CreateWallet: React.FC = () => {
             rows={4}
             readOnly
             value={mnemonic}
-            placeholder="Your 24-word recovery phrase will appear here"
+            placeholder={isLoading ? "Generating recovery phrase..." : "Your 24-word recovery phrase will appear here"}
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
@@ -142,9 +177,9 @@ export const CreateWallet: React.FC = () => {
           </button>
         </div>
 
-        {toast && (
+        {fallbackToast && (
           <div className="wallet-toast" role="status" aria-live="polite" data-testid="wallet-toast">
-            {toast}
+            {fallbackToast}
           </div>
         )}
       </div>

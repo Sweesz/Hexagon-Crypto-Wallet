@@ -1,0 +1,72 @@
+/* Skeleton Base & Shimmer Animation */
+.skeleton-base {
+  background: linear-gradient(
+    90deg,
+    rgba(226, 232, 240, 0.6) 0%,
+    rgba(203, 213, 225, 0.9) 50%,
+    rgba(226, 232, 240, 0.6) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite linear;
+  display: block;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-text {
+  border-radius: 4px;
+  height: 16px;
+  margin-bottom: 4px;
+}
+
+.skeleton-rectangular {
+  border-radius: 6px;
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+}
+
+.skeleton-card {
+  border-radius: 8px;
+  min-height: 48px;
+}
+
+/* Skeleton Balance Wrapper */
+.skeleton-balance-wrapper {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.skeleton-balance-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Skeleton Transaction Wrapper */
+.skeleton-transaction-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+}
+
+.skeleton-transaction-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

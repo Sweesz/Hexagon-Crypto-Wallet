@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { Address } from '@ton/core';
 import type { SendTransactionParams } from '../wallet/types';
 import { truncateAddress, formatTonAmount, getFullAddressString } from '../utils/address';
+import { TransactionSkeleton } from './Skeleton/Skeleton';
 import './TransactionConfirmModal.css';
 
 export interface TransactionConfirmModalProps {
@@ -51,6 +52,11 @@ export interface TransactionConfirmModalProps {
   errorMessage?: string | null;
 
   /**
+   * Optional technical details for the error to toggle in the modal.
+   */
+  technicalDetails?: string | null;
+
+  /**
    * Callback invoked only when user explicitly clicks "Confirm Send".
    * Receives the normalized SendTransactionParams to be sent on-chain.
    */
@@ -72,9 +78,11 @@ export const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = (
   bounceable,
   isLoading = false,
   errorMessage,
+  technicalDetails,
   onConfirm,
   onCancel,
 }) => {
+  const [showTechnicalDetails, setShowTechnicalDetails] = useState<boolean>(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
@@ -265,9 +273,32 @@ export const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = (
           </div>
         </div>
 
+        {isLoading && (
+          <div className="modal-loading-indicator" data-testid="modal-loading-indicator">
+            <TransactionSkeleton dataTestId="transaction-sending-skeleton" />
+          </div>
+        )}
+
         {errorMessage && (
           <div className="modal-error-banner" role="alert" data-testid="modal-error-message">
             {errorMessage}
+            {technicalDetails && (
+              <div className="modal-error-details-wrapper">
+                <button
+                  type="button"
+                  className="btn-modal-details-toggle"
+                  data-testid="modal-error-details-toggle"
+                  onClick={() => setShowTechnicalDetails((prev) => !prev)}
+                >
+                  {showTechnicalDetails ? 'Hide technical details' : 'Show technical details'}
+                </button>
+                {showTechnicalDetails && (
+                  <pre className="modal-error-technical-details" data-testid="modal-error-technical-details">
+                    {technicalDetails}
+                  </pre>
+                )}
+              </div>
+            )}
           </div>
         )}
 
