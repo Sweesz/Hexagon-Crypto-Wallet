@@ -1,37 +1,92 @@
+<div align="center">
+  <img 
+    src="./assets/images/logo.png" 
+    alt="Hexagon Wallet Banner" 
+    width="100%" 
+    style="max-width: 1200px; border-radius: 12px; margin-bottom: 24px;"
+  />
+</div>
+
 ![Languages](https://img.shields.io/github/languages/top/Sweesz/Hexagon-Crypto-Wallet)
 ![Contributors](https://img.shields.io/github/contributors/Sweesz/Hexagon-Crypto-Wallet)
 [![GitHub Issues](https://img.shields.io/github/issues/Sweesz/Hexagon-Crypto-Wallet)](https://github.com/Sweesz/Hexagon-Crypto-Wallet/issues)
-# Hexagon
 
+# Hexagon
 A modern cryptocurrency wallet app built on the TON (The Open Network) blockchain and providing secure and efficient management of digital assets was created by a university team as a course project to demonstrate our skills and teamwork.
 
 ## Features
 
-- Secure wallet creation and management
-- Send and receive TON tokens
-- Transaction history tracking
-- Real-time balance updates
-- User-friendly interface
-- Built on TON blockchain technology
+-   **Secure Onboarding:** Client-side mnemonic generation and encrypted local storage.
+-   **Real-time Balance:** Instant fetching and conversion of nano-TON to human-readable format.
+-   **Safe Transactions:** Mandatory confirmation modals and client-side input validation before signing.
+-   **Testnet Integration:** Seamless interaction with TON Testnet RPC nodes and sandbox testing.
+-   **Developer Experience:** Strict TypeScript typing, Vitest coverage, and modular Core/UI architecture.
 
 ## Prerequisites
+Before you begin, ensure you have the following installed:
+- **Node.js**: v20.x or higher (LTS recommended)
+- **npm**: v9.x or higher
+- **Git**: For cloning the repository
 
-<!-- TODO: Add prerequisites -->
+> ⚠️ **Important:** This project uses modern crypto APIs. Node.js versions below v18 may experience performance issues with key generation due to entropy limitations.
 
-## Installation
+## Usage and installation
 
-<!-- TODO: Add installation instructions -->
+1. ### Clone the repository:
+  ```bash
+   git clone https://github.com/Sweesz/Hexagon-Crypto-Wallet.git
+   cd Hexagon-Crypto-Wallet
+```
+2. ### Install dependencies:
+```bash
+npm install
+```
 
-## Usage
+3. ### Start the development server:
+```bash
+npm install
+```
+4. *Open http://localhost:3000 in your browser.*
 
-<!-- TODO: Add Usage -->
+## Architecture
+
+Hexagon follows a strict separation of concerns between cryptographic core and UI presentation:
+
+
+```mermaid
+graph TD
+    subgraph UI Layer ["UI Layer (React/Vue)"]
+        A[Create Wallet Screen] --> B[Balance Dashboard]
+        B --> C[Send Transaction Modal]
+        C --> D[Toast Notifications]
+    end
+
+    subgraph Core Layer ["Core Layer (TypeScript)"]
+        E[generateWallet] --> F[getBalance]
+        F --> G[sendTransaction]
+        H[Input Validator] -.-> G
+        I[Encryption Service] -.-> E
+    end
+
+    subgraph Blockchain ["TON Blockchain"]
+        J[Testnet RPC Node]
+        K[Wallet V4R2 Contract]
+    end
+
+    UI Layer --> Core Layer
+    Core Layer --> J
+    J --> K
+```
 
 ## Tech Stack
-
-- front-end development: typescript
-- back-end development: typescript
-- core libs: [ton-org/ton-crypto](https://github.com/ton-org/ton-crypto), [ton-org/ton-core](https://github.com/ton-org/ton-core?ysclid=mve4mmiq2t238001718), [ton/ton](https://github.com/ton-blockchain?ysclid=mve4o18qn9228808233)
-- test lib: vitest
+| Category        | Technology                             | Purpose                                |
+| :-------------- | :------------------------------------- | :------------------------------------- |
+| **Language**    | TypeScript                             | Type-safe core and UI logic            |
+| **Blockchain**  | TON (The Open Network)                 | Decentralized asset management         |
+| **Crypto Core** | `@ton/crypto`, `@ton/core`, `@ton/ton` | Key generation, BOC serialization, RPC |
+| **Testing**     | Vitest + @ton/sandbox                  | Unit tests and TVM emulation           |
+| **Frontend**    | React + Vite                           | Component-based UI with hot reload     |
+| **Security**    | Web Crypto API (AES-GCM)               | Client-side mnemonic encryption        |
 ## Team Roles & Contributions
 
 ### Воронцов Я.Н (Vorontsov Y.N.)
@@ -60,6 +115,6 @@ Special thanks to all team members for their dedication and hard work on this pr
 
 ---
 
-*This is a student project developed as part of our educational journey.*
+*© 2026 Hexagon Team. This is a student project developed as part of our educational journey.*
 
 
