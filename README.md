@@ -55,27 +55,15 @@ Hexagon follows a strict separation of concerns between cryptographic core and U
 
 ```mermaid
 graph TD
-    subgraph UI Layer ["UI Layer (React/Vue)"]
-        A[Create Wallet Screen] --> B[Balance Dashboard]
-        B --> C[Send Transaction Modal]
-        C --> D[Toast Notifications]
-    end
-
-    subgraph Core Layer ["Core Layer (TypeScript)"]
-        E[generateWallet] --> F[getBalance]
-        F --> G[sendTransaction]
-        H[Input Validator] -.-> G
-        I[Encryption Service] -.-> E
-    end
-
-    subgraph Blockchain ["TON Blockchain"]
-        J[Testnet RPC Node]
-        K[Wallet V4R2 Contract]
-    end
-
-    UI Layer --> Core Layer
-    Core Layer --> J
-    J --> K
+    A[Create Wallet] --> B[Balance Dashboard]
+    B --> C[Send Modal]
+    E[generateWallet] --> F[getBalance]
+    F --> G[sendTransaction]
+    A --> E
+    B --> F
+    C --> G
+    F --> J[Testnet RPC]
+    G --> J
 ```
 
 ## Tech Stack
