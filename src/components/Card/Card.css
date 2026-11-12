@@ -1,0 +1,142 @@
+/* ==========================================================================
+   Atomic Card Component
+   Zero hardcoded colors and font-sizes: all values map to tokens.css
+   ========================================================================== */
+
+.card-atomic {
+  position: relative;
+  border-radius: var(--radius-2xl);
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  box-sizing: border-box;
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              box-shadow var(--transition-fast),
+              transform var(--transition-fast);
+}
+
+/* Padding variants */
+.card-atomic.card-padding-none {
+  padding: var(--space-0);
+}
+
+.card-atomic.card-padding-sm {
+  padding: var(--space-3);
+}
+
+.card-atomic.card-padding-md {
+  padding: var(--space-5);
+}
+
+.card-atomic.card-padding-lg {
+  padding: var(--space-7);
+}
+
+/* Default Variant */
+.card-atomic.card-default {
+  background-color: var(--color-surface-white);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Paper Variant (Editorial Brutalist palette) */
+.card-atomic.card-paper {
+  background-color: var(--color-bg-paper-light);
+  border: 1px solid var(--color-bg-paper-divider);
+  box-shadow: var(--shadow-brutalist-md);
+}
+
+/* Dark Variant */
+.card-atomic.card-dark {
+  background-color: var(--color-brand-dark-card);
+  border: 1px solid var(--color-brand-dark-card-border);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-md);
+}
+
+.card-atomic.card-dark .card-title {
+  color: var(--color-text-inverse);
+}
+
+.card-atomic.card-dark .card-description {
+  color: var(--color-text-inverse-muted);
+}
+
+/* Balance Variant (for balance display) */
+.card-atomic.card-balance {
+  background-color: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Transaction Variant (for transaction items) */
+.card-atomic.card-transaction {
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Interactive Card State */
+.card-atomic.card-interactive {
+  cursor: pointer;
+  user-select: none;
+}
+
+.card-atomic.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-atomic.card-interactive.card-paper:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-brutalist-lg);
+}
+
+.card-atomic.card-interactive:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-surface-white), 0 0 0 4px var(--color-brand-primary);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+/* Card Title */
+.card-title {
+  margin: var(--space-0);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-snug);
+  color: var(--color-text-primary);
+}
+
+/* Card Description */
+.card-description {
+  margin: var(--space-0);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-subtle);
+  line-height: var(--line-height-normal);
+}
+
+/* Card Content */
+.card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card Footer */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+}
