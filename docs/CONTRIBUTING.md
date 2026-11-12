@@ -54,6 +54,41 @@ If a function is specific to wallet logic → put it in src/wallet/.
 If a function is specific to UI rendering → put it in src/components/.
 utils/ is ONLY for cross-cutting concerns that serve multiple layers.
 
+## Design System & Token Conventions (UI Layer)
+
+All design values (colors, typography, spacing, border radii, shadows) are centralized in `src/styles/tokens.css` as CSS Custom Properties on `:root`.
+
+> ⚠️ **Zero Hardcoded Values Rule:**
+> Direct hardcoded `#hex` colors and fixed `font-size: <N>px` in component CSS are strictly forbidden. Always use `var(--color-...)`, `var(--font-size-...)`, `var(--space-...)`, and `var(--radius-...)`. Changing a single token in `tokens.css` must propagate visually across the entire application.
+
+### 1. Token Naming Conventions
+
+Tokens follow a predictable, hierarchical naming convention:
+
+| Category | Pattern | Examples |
+| :--- | :--- | :--- |
+| **Brand Colors** | `--color-brand-[name]-[state]` | `--color-brand-primary`, `--color-brand-primary-hover`, `--color-brand-yellow` |
+| **Surfaces & Backgrounds** | `--color-bg-[surface]` | `--color-bg-paper`, `--color-bg-paper-light`, `--color-bg-dark-card`, `--color-bg-app` |
+| **Typography Colors** | `--color-text-[role]` | `--color-text-primary`, `--color-text-muted`, `--color-text-subtle`, `--color-text-inverse` |
+| **Semantic Feedback** | `--color-[intent]-[element/state]` | `--color-success`, `--color-success-bg`, `--color-error-text`, `--color-warning-border` |
+| **Borders** | `--color-border-[variant]` | `--color-border-default`, `--color-border-subtle`, `--color-border-dark` |
+| **Font Families** | `--font-[family]` | `--font-sans`, `--font-display`, `--font-mono` |
+| **Font Sizes** | `--font-size-[scale]` | `--font-size-2xs` (11px), `--font-size-xs` (12px), `--font-size-sm` (13px), `--font-size-md` (14px), `--font-size-lg` (16px), `--font-size-xl` (18px), `--font-size-2xl` (20px), `--font-size-3xl` (22px), `--font-size-display` (32px) |
+| **Font Weights** | `--font-weight-[weight]` | `--font-weight-regular` (400), `--font-weight-medium` (500), `--font-weight-semibold` (600), `--font-weight-bold` (700), `--font-weight-black` (900) |
+| **Border Radii** | `--radius-[scale]` | `--radius-none` (0px), `--radius-xs` (4px), `--radius-sm` (6px), `--radius-md` (8px), `--radius-lg` (10px), `--radius-xl` (12px), `--radius-3xl` (16px), `--radius-pill` (20px), `--radius-full` (50%), `--radius-max` (9999px) |
+| **Spacing** | `--space-[step]` | `--space-1` (4px), `--space-2` (8px), `--space-3` (12px), `--space-4` (16px), `--space-5` (20px), `--space-6` (24px), `--space-8` (32px) |
+| **Shadows & Offsets** | `--shadow-[variant]` | `--shadow-brutalist-md` (4px 4px 0 #f6542b), `--shadow-card-offset`, `--shadow-sm`, `--shadow-modal`, `--shadow-toast` |
+
+### 2. Figma Text Style Classes
+
+Reusable typographic classes mapped to the Figma design system are defined in `tokens.css`:
+- `.text-display`: Ultra-bold brutalist display font for banners and hero elements.
+- `.text-h1` / `.text-h2` / `.text-h3`: Standard headings with matched weights and line-heights.
+- `.text-title`: Subheadings and card titles.
+- `.text-body` / `.text-body-medium` / `.text-body-sm`: Standard interface body text.
+- `.text-caption` / `.text-micro`: Small metadata, timestamps, and uppercase badges.
+- `.text-mono` / `.text-mono-sm`: Monospace text for addresses, hashes, and raw data.
+
 ## Development Workflow
 
 ### 1. Branching
