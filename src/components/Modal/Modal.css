@@ -1,0 +1,151 @@
+/* ==========================================================================
+   Atomic Modal Component
+   Zero hardcoded colors and font-sizes: all values map to tokens.css
+   ========================================================================== */
+
+.modal-atomic-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-bg-overlay);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: var(--space-4);
+  animation: modalFadeIn var(--transition-fast) ease-out;
+  box-sizing: border-box;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-atomic-dialog {
+  position: relative;
+  background: var(--color-surface-white);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--shadow-modal);
+  width: 100%;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  animation: modalScaleUp 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  box-sizing: border-box;
+  max-height: calc(100vh - var(--space-8));
+  overflow-y: auto;
+}
+
+@keyframes modalScaleUp {
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Modal Sizes */
+.modal-atomic-dialog.modal-sm {
+  max-width: 380px;
+}
+
+.modal-atomic-dialog.modal-md {
+  max-width: 520px;
+}
+
+.modal-atomic-dialog.modal-lg {
+  max-width: 680px;
+}
+
+/* Header */
+.modal-atomic-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.modal-atomic-titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  text-align: left;
+}
+
+.modal-atomic-title {
+  margin: var(--space-0);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-snug);
+}
+
+.modal-atomic-description {
+  margin: var(--space-0);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-subtle);
+  line-height: var(--line-height-normal);
+}
+
+/* Close Button */
+.modal-atomic-close-btn {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-none);
+  color: var(--color-text-disabled);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.modal-atomic-close-btn:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-subtle);
+}
+
+.modal-atomic-close-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-surface-white), 0 0 0 4px var(--color-brand-primary);
+}
+
+/* Body */
+.modal-atomic-body {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  color: var(--color-text-body);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Footer */
+.modal-atomic-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}

@@ -1,0 +1,147 @@
+/* ==========================================================================
+   Atomic Input Component
+   Zero hardcoded colors and font-sizes: all values map to tokens.css
+   ========================================================================== */
+
+.input-field-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  text-align: left;
+}
+
+.input-field-container.input-full-width {
+  width: 100%;
+}
+
+/* Label */
+.input-label {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+.input-required-mark {
+  color: var(--color-error);
+  margin-left: var(--space-0-5);
+}
+
+/* Input Wrapper for icon positioning */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Input Base */
+.input-atomic {
+  width: 100%;
+  padding: var(--space-2-5) var(--space-3-5);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast),
+              box-shadow var(--transition-fast),
+              background-color var(--transition-fast);
+}
+
+/* Interactive States: Hover & Focus */
+.input-atomic:hover:not(:disabled):not(:read-only) {
+  border-color: var(--color-border-dark);
+}
+
+.input-atomic:focus {
+  outline: none;
+  border-color: var(--color-brand-primary);
+  background-color: var(--color-surface-white);
+  box-shadow: 0 0 0 3px var(--color-brand-primary-subtle);
+}
+
+/* Error State */
+.input-atomic.input-state-error {
+  border-color: var(--color-error);
+  background-color: var(--color-error-bg);
+  color: var(--color-error-dark);
+}
+
+.input-atomic.input-state-error:focus {
+  border-color: var(--color-error-hover);
+  box-shadow: 0 0 0 3px var(--color-error-border);
+}
+
+/* Disabled State */
+.input-atomic:disabled {
+  background-color: var(--color-bg-app);
+  color: var(--color-text-disabled);
+  border-color: var(--color-border-subtle);
+  cursor: not-allowed;
+}
+
+/* Read-Only State */
+.input-atomic:read-only {
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-body);
+  cursor: default;
+}
+
+/* Icons */
+.input-atomic.has-left-icon {
+  padding-left: calc(var(--space-6) + var(--space-2));
+}
+
+.input-atomic.has-right-icon {
+  padding-right: calc(var(--space-6) + var(--space-2));
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-subtle);
+  pointer-events: none;
+}
+
+.input-icon-left {
+  left: var(--space-3);
+}
+
+.input-icon-right {
+  right: var(--space-3);
+}
+
+.input-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Helper and Error Messages */
+.input-helper-text {
+  margin: var(--space-0);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-subtle);
+  line-height: var(--line-height-normal);
+}
+
+.input-error-message {
+  margin: var(--space-0);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-error-dark);
+  line-height: var(--line-height-normal);
+}
