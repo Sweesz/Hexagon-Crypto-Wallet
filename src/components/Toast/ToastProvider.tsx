@@ -78,7 +78,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   );
 
   const showSuccess = useCallback(
-    (message: string, options?: Partial<ShowToastOptions>): string => {
+    (message: React.ReactNode, options?: Partial<ShowToastOptions>): string => {
       return showToast({
         ...options,
         type: 'success',
@@ -92,7 +92,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
 
   const showError = useCallback(
     (messageOrError: unknown, options?: Partial<ShowToastOptions>): string => {
-      if (typeof messageOrError === 'string' && !options?.technicalDetails) {
+      if ((typeof messageOrError === 'string' || React.isValidElement(messageOrError)) && !options?.technicalDetails) {
         return showToast({
           ...options,
           type: 'error',
@@ -112,7 +112,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   );
 
   const showWarning = useCallback(
-    (message: string, options?: Partial<ShowToastOptions>): string => {
+    (message: React.ReactNode, options?: Partial<ShowToastOptions>): string => {
       return showToast({
         ...options,
         type: 'warning',

@@ -6,12 +6,14 @@
   bottom: 0;
   background-color: var(--color-bg-overlay);
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   padding: var(--space-4);
   animation: modalFadeIn var(--transition-fast) ease-out;
+  font-family: var(--font-sans);
 }
 
 @keyframes modalFadeIn {
@@ -36,6 +38,9 @@
   gap: var(--space-5);
   animation: modalScaleUp 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   outline: none;
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  box-sizing: border-box;
 }
 
 @keyframes modalScaleUp {
@@ -70,13 +75,16 @@
 }
 
 .modal-title {
+  font-family: var(--font-sans);
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   margin: var(--space-0);
+  line-height: var(--line-height-snug);
 }
 
 .modal-subtitle {
+  font-family: var(--font-sans);
   font-size: var(--font-size-sm);
   color: var(--color-text-subtle);
   margin: var(--space-0);
@@ -91,6 +99,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  font-family: var(--font-sans);
 }
 
 .modal-detail-row {
@@ -98,6 +107,7 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: var(--space-3);
+  font-family: var(--font-sans);
   font-size: var(--font-size-md);
   border-bottom: 1px dashed var(--color-border-subtle);
   padding-bottom: var(--space-2-5);
@@ -109,6 +119,7 @@
 }
 
 .modal-detail-label {
+  font-family: var(--font-sans);
   color: var(--color-text-subtle);
   font-weight: var(--font-weight-medium);
   flex-shrink: 0;
@@ -123,6 +134,7 @@
 }
 
 .modal-detail-value {
+  font-family: var(--font-sans);
   color: var(--color-text-primary);
   font-weight: var(--font-weight-semibold);
   text-align: right;
@@ -142,18 +154,21 @@
 }
 
 .modal-amount-highlight {
+  font-family: var(--font-sans);
   font-size: var(--font-size-lg);
   color: var(--color-primary);
   font-weight: var(--font-weight-bold);
 }
 
 .modal-comment-value {
+  font-family: var(--font-sans);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-body);
   word-break: break-word;
 }
 
 .modal-empty-text {
+  font-family: var(--font-sans);
   color: var(--color-text-disabled);
   font-style: italic;
   font-weight: var(--font-weight-regular);
@@ -165,6 +180,7 @@
   color: var(--color-error-dark);
   padding: var(--space-2-5) var(--space-3-5);
   border-radius: var(--radius-md);
+  font-family: var(--font-sans);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-normal);
 }
@@ -179,6 +195,7 @@
 .btn-modal-cancel {
   flex: 1;
   padding: 11px var(--space-4);
+  font-family: var(--font-sans);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-muted);
@@ -207,6 +224,7 @@
 .btn-modal-confirm {
   flex: 1;
   padding: 11px var(--space-4);
+  font-family: var(--font-sans);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-inverse);

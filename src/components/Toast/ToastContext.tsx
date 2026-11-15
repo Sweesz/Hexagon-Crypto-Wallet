@@ -6,7 +6,7 @@ export type ToastType = 'success' | 'error' | 'warning' | 'info';
 export interface ToastItem {
   id: string;
   type: ToastType;
-  message: string;
+  message: React.ReactNode;
   title?: string;
   technicalDetails?: string;
   duration?: number;
@@ -15,7 +15,7 @@ export interface ToastItem {
 
 export interface ShowToastOptions {
   type?: ToastType;
-  message: string;
+  message: React.ReactNode;
   title?: string;
   technicalDetails?: string;
   duration?: number;
@@ -24,9 +24,9 @@ export interface ShowToastOptions {
 export interface ToastContextValue {
   toasts: ToastItem[];
   showToast: (options: ShowToastOptions) => string;
-  showSuccess: (message: string, options?: Partial<ShowToastOptions>) => string;
+  showSuccess: (message: React.ReactNode, options?: Partial<ShowToastOptions>) => string;
   showError: (messageOrError: unknown, options?: Partial<ShowToastOptions>) => string;
-  showWarning: (message: string, options?: Partial<ShowToastOptions>) => string;
+  showWarning: (message: React.ReactNode, options?: Partial<ShowToastOptions>) => string;
   dismissToast: (id: string) => void;
   clearAllToasts: () => void;
 }

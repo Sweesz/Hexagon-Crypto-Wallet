@@ -1,0 +1,342 @@
+/* ==========================================================================
+   SendTransaction — Editorial Brutalist Design
+   Strictly Zero Hardcoded Values — All values map to tokens.css
+   ========================================================================== */
+
+.send-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 640px;
+  padding: var(--space-4);
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* Editorial Brutalist Tape / Ribbon */
+.editorial-ribbon {
+  width: 100%;
+  background-color: var(--color-brand-primary);
+  color: var(--color-text-inverse);
+  padding: var(--space-2) var(--space-0);
+  font-family: var(--font-accent);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-black);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  text-align: center;
+  border: none;
+  outline: none;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-3);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  display: flex;
+  user-select: none;
+}
+
+.editorial-ribbon-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: ribbonMarquee 22s linear infinite;
+}
+
+.editorial-ribbon:hover .editorial-ribbon-track {
+  animation-play-state: paused;
+}
+
+.editorial-ribbon-segment {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  padding-right: var(--space-4);
+}
+
+@keyframes ribbonMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editorial-ribbon-track {
+    animation: none;
+  }
+}
+
+/* Card Root Container */
+.send-card,
+.card-atomic.send-card {
+  position: relative;
+  background-color: var(--color-bg-paper-light);
+  border: 2px solid var(--color-border-black) !important;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-brutalist-md);
+  padding: var(--space-6);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Header & Badges */
+.send-card-header {
+  margin-bottom: var(--space-5);
+  text-align: left;
+}
+
+.send-badge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.send-badge {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wider);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.send-badge-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-brand-primary);
+  display: inline-block;
+  box-shadow: 0 0 4px var(--color-brand-primary);
+}
+
+/* Title & Description */
+.send-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-black);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+  text-transform: uppercase;
+  color: var(--color-brand-dark);
+  margin-bottom: var(--space-1);
+}
+
+.send-description {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-body);
+  line-height: var(--line-height-normal);
+}
+
+/* Sections & Fields */
+.send-section {
+  margin-bottom: var(--space-4);
+  text-align: left;
+}
+
+.send-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-1-5);
+}
+
+.send-label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.send-label-hint {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-muted);
+}
+
+/* Amount Input Wrapper with suffix */
+.amount-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.amount-suffix-badge {
+  position: absolute;
+  right: var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-brand-primary);
+  background-color: var(--color-brand-primary-subtle);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-xs);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Char counter for comment */
+.comment-counter {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-subtle);
+}
+
+.comment-counter.counter-warning {
+  color: var(--color-warning-dark);
+  font-weight: var(--font-weight-bold);
+}
+
+.comment-counter.counter-error {
+  color: var(--color-error);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Inline Error Message (Matches Input.tsx styling) */
+.send-inline-error {
+  margin-top: var(--space-1-5);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-error);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.send-inline-error svg {
+  flex-shrink: 0;
+}
+
+/* Quick Amount Pills */
+.quick-amounts-row {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.quick-amount-pill {
+  padding: var(--space-1) var(--space-2-5);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  background-color: var(--color-surface-white);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.quick-amount-pill:hover:not(:disabled) {
+  border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+  background-color: var(--color-brand-primary-subtle);
+}
+
+.quick-amount-pill:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Security / Sender Wallet Note */
+.sender-info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2-5);
+  padding: var(--space-3);
+  background-color: var(--color-bg-paper);
+  border: 1px dashed var(--color-border-dark);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-body);
+}
+
+.sender-info-box svg {
+  flex-shrink: 0;
+  color: var(--color-brand-primary);
+  margin-top: 2px;
+}
+
+/* Main Review Action Button */
+.btn-review-main {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-size-md) !important;
+  letter-spacing: var(--letter-spacing-wide) !important;
+  text-transform: uppercase !important;
+  border: 2px solid var(--color-border-black) !important;
+  box-shadow: 2px 2px 0 var(--color-border-black) !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease !important;
+}
+
+.btn-review-main:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--color-border-black) !important;
+}
+
+.btn-review-main:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--color-border-black) !important;
+}
+
+/* Footer Note */
+.send-card-footer,
+.wallet-card-footer.send-card-footer,
+.card-footer.send-card-footer {
+  margin-top: var(--space-5);
+  border-top: 1px solid var(--color-border-subtle);
+  padding-top: var(--space-3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footer-note {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-subtle);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  text-align: center;
+  display: inline-block;
+}
+
+/* Toast transaction hash link */
+.toast-tx-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: inherit;
+  font-weight: var(--font-weight-bold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.toast-tx-link:hover {
+  opacity: 0.85;
+}

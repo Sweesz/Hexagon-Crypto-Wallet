@@ -7,3 +7,4 @@ export * from './Toast';
 export * from './CreateWallet';
 export * from './CheckBalance';
 export * from './TransactionConfirmModal';
+export * from './SendTransaction';
