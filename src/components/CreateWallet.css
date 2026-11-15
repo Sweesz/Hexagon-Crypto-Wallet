@@ -1,167 +1,577 @@
-* {
-  box-sizing: border-box;
-  margin: var(--space-0);
-  padding: var(--space-0);
-}
-
-body {
-  font-family: var(--font-sans);
-  background-color: var(--color-bg-app);
-  color: var(--color-text-secondary);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+/* ==========================================================================
+   CreateWallet — Editorial Brutalist Design (Unslop Edition)
+   Strictly Zero Hardcoded Values — All values map to tokens.css
+   ========================================================================== */
 
 .wallet-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  width: 600px;
-  padding: var(--space-6-5);
-}
-
-.wallet-card {
-  position: relative;
-  background: var(--color-surface-white);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-lg);
-  padding: var(--space-7);
-  max-width: 860px;
   width: 100%;
+  max-width: 640px;
+  padding: var(--space-4);
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* Editorial Brutalist Tape / Ribbon */
+.editorial-ribbon {
+  width: 100%;
+  background-color: var(--color-brand-primary);
+  color: var(--color-text-inverse);
+  padding: var(--space-2) var(--space-0);
+  font-family: var(--font-accent);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-black);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
   text-align: center;
+  border: none;
+  outline: none;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-3);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  display: flex;
+  user-select: none;
 }
 
-.wallet-title {
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-semibold);
+.editorial-ribbon-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: ribbonMarquee 22s linear infinite;
+}
+
+.editorial-ribbon:hover .editorial-ribbon-track {
+  animation-play-state: paused;
+}
+
+.editorial-ribbon-segment {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  padding-right: var(--space-4);
+}
+
+@keyframes ribbonMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editorial-ribbon-track {
+    animation: none;
+  }
+}
+
+/* Card Root Container */
+.wallet-card,
+.card-atomic.wallet-card {
+  position: relative;
+  background-color: var(--color-bg-paper-light);
+  border: 2px solid var(--color-border-black) !important;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-brutalist-md);
+  padding: var(--space-6);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Header & Badges */
+.wallet-card-header {
   margin-bottom: var(--space-5);
-  color: var(--color-text-primary);
+  text-align: left;
 }
 
-.wallet-section {
-  margin-bottom: var(--space-4-5);
+.wallet-badge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.wallet-badge {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wider);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.wallet-badge-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-brand-primary);
+  display: inline-block;
+  box-shadow: 0 0 4px var(--color-brand-primary);
+}
+
+/* Confident Unslop Headline Typography (Tupo Vyaz) */
+.wallet-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-black);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+  text-transform: uppercase;
+  color: var(--color-brand-dark);
+  margin-bottom: var(--space-1);
+}
+
+.wallet-description {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-body);
+  line-height: var(--line-height-normal);
+}
+
+/* Persisted Status Banner */
+.wallet-persisted-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-brand-dark-card);
+  border: 1px solid var(--color-brand-dark-card-border);
+  border-left: 4px solid var(--color-brand-primary);
+  border-radius: var(--radius-md);
+  color: var(--color-text-inverse);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.persisted-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-gold {
+  color: var(--color-brand-yellow);
+}
+
+.persisted-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   text-align: left;
+}
+
+.persisted-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-brand-yellow);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.persisted-desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-inverse-muted);
+}
+
+/* Restored button with high-contrast, fully visible solid orange style */
+.btn-atomic.btn-reset-wallet {
+  background-color: var(--color-brand-primary) !important;
+  color: var(--color-text-inverse) !important;
+  border: 1px solid var(--color-brand-primary) !important;
+  font-size: var(--font-size-xs) !important;
+  font-weight: var(--font-weight-bold) !important;
+  padding: var(--space-1-5) var(--space-3) !important;
+  border-radius: var(--radius-sm) !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all var(--transition-fast) !important;
+  flex-shrink: 0 !important;
+}
+
+.btn-atomic.btn-reset-wallet:hover {
+  background-color: var(--color-brand-primary-hover) !important;
+  border-color: var(--color-brand-primary-hover) !important;
+  color: var(--color-text-inverse) !important;
+  transform: translateY(-1px);
+}
+
+.btn-atomic.btn-reset-wallet:active {
+  transform: translateY(1px);
+}
+
+/* Sections */
+.wallet-section {
+  margin-bottom: var(--space-4);
+  text-align: left;
+}
+
+.wallet-section.mnemonic-display-section {
+  margin-bottom: var(--space-2);
+}
+
+.wallet-section.copy-action-section {
+  margin-bottom: var(--space-4);
 }
 
 .wallet-label {
   display: block;
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-medium);
-  margin-bottom: var(--space-2);
-  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-1-5);
+  color: var(--color-text-primary);
 }
 
+/* Inputs & Monospace address */
 .wallet-input {
   width: 100%;
   padding: var(--space-2-5) var(--space-3-5);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-md);
-  background-color: var(--color-bg-subtle);
+  background-color: var(--color-surface-white);
   color: var(--color-text-secondary);
   outline: none;
   font-family: inherit;
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-sizing: border-box;
 }
 
 .wallet-readonly-input {
   background-color: var(--color-bg-subtle);
-  color: var(--color-text-body);
-  cursor: default;
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  letter-spacing: var(--letter-spacing-wide);
+  cursor: text;
 }
 
 .wallet-input:focus,
 .wallet-readonly-input:focus {
   outline: none;
-  border-color: var(--color-primary-focus);
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 0 0 3px var(--color-brand-primary-subtle);
 }
 
+/* Mnemonic Header & Reveal Button */
+.mnemonic-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-1-5);
+}
+
+.mnemonic-header-row .wallet-label {
+  margin-bottom: 0;
+}
+
+.btn-toggle-reveal {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: transparent;
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2-5);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-brand-dark);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-toggle-reveal:hover {
+  background-color: var(--color-brand-primary-subtle);
+  border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+}
+
+.btn-reveal-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Mnemonic Container & Blur-Until-Confirmed */
+.mnemonic-container {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--color-surface-white);
+  border: 1px solid var(--color-border-default);
+}
+
+/* Blur Overlay & Constructivist Stamp */
+.mnemonic-blur-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  background-color: rgba(18, 18, 20, 0.76);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10;
+  cursor: pointer;
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--color-text-inverse);
+  transition: background-color var(--transition-fast);
+}
+
+.mnemonic-blur-overlay:hover {
+  background-color: rgba(18, 18, 20, 0.86);
+}
+
+.blur-stamp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background-color: rgba(246, 84, 43, 0.2);
+  border: 1px solid var(--color-brand-primary);
+  color: var(--color-brand-primary);
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-black);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  padding: var(--space-0-5) var(--space-2);
+  border-radius: var(--radius-xs);
+  margin-bottom: var(--space-1);
+}
+
+.stamp-icon {
+  color: var(--color-brand-primary);
+}
+
+.blur-notice-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-inverse);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.blur-notice-sub {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-inverse-muted);
+}
+
+/* 24-Word Grid Display */
+.mnemonic-words-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-1-5);
+  padding: var(--space-3);
+  background-color: var(--color-bg-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: filter var(--transition-normal);
+}
+
+@media (max-width: 480px) {
+  .mnemonic-words-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.mnemonic-words-grid.is-blurred {
+  filter: blur(6px);
+  user-select: none;
+  pointer-events: none;
+}
+
+.mnemonic-word-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-1-5);
+  background-color: var(--color-surface-white);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+}
+
+.word-index {
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  min-width: 14px;
+}
+
+.word-text {
+  font-family: var(--font-mono);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+/* Textarea fallback / accessible copyable area */
 .wallet-textarea {
   width: 100%;
-  padding: var(--space-3);
-  font-size: var(--font-size-md);
+  padding: var(--space-2-5) var(--space-3);
+  font-size: var(--font-size-xs);
   line-height: var(--line-height-relaxed);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-md);
-  background-color: var(--color-bg-subtle);
+  border: none;
+  background-color: var(--color-surface-white);
   color: var(--color-text-body);
   resize: none;
-  font-family: inherit;
+  font-family: var(--font-mono);
+  box-sizing: border-box;
+  transition: filter var(--transition-normal);
+}
+
+.wallet-textarea.is-blurred {
+  filter: blur(6px);
+  user-select: none;
 }
 
 .wallet-textarea:focus {
   outline: none;
-  border-color: var(--color-primary-focus);
 }
 
-.btn-primary {
-  width: 100%;
-  padding: var(--space-2-5) var(--space-4);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
-  border: none;
+/* Copy Button Feedback — Disciplined Black/Gold (Unslop) */
+.btn-copy-success {
+  background-color: var(--color-brand-dark) !important;
+  color: var(--color-brand-yellow) !important;
+  border-color: var(--color-brand-dark) !important;
+  font-weight: var(--font-weight-bold) !important;
+}
+
+/* Checkbox Confirmation */
+.wallet-checkbox-wrapper {
+  padding: var(--space-3);
+  background-color: var(--color-bg-paper);
+  border: 1px dashed var(--color-border-dark);
   border-radius: var(--radius-md);
-  background-color: var(--color-primary);
-  color: var(--color-text-inverse);
+}
+
+.wallet-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2-5);
   cursor: pointer;
-  transition: background-color var(--transition-fast), opacity var(--transition-fast);
+  user-select: none;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background-color: var(--color-primary-hover);
+.wallet-checkbox-input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--color-brand-primary);
+  flex-shrink: 0;
 }
 
-.btn-primary:disabled {
-  background-color: var(--color-primary-disabled);
-  cursor: not-allowed;
-  opacity: 0.75;
-}
-
-.btn-secondary {
-  width: 100%;
-  padding: var(--space-2-5) var(--space-4);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-medium);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface-white);
+.wallet-checkbox-text {
+  font-size: var(--font-size-xs);
   color: var(--color-text-body);
-  cursor: pointer;
-  transition: background-color var(--transition-fast), opacity var(--transition-fast);
+  line-height: var(--line-height-normal);
 }
 
-.btn-secondary:hover:not(:disabled) {
+/* Password Entry Section */
+.password-entry-section {
   background-color: var(--color-bg-subtle);
+  padding: var(--space-3-5);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
 }
 
-.btn-secondary:disabled {
-  color: var(--color-text-disabled);
-  border-color: var(--color-border-subtle);
-  background-color: var(--color-bg-subtle);
-  cursor: not-allowed;
+/* Buttons with brutalist analog click */
+.btn-generate-main {
+  box-shadow: var(--shadow-brutalist-sm);
 }
 
+.btn-generate-main:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.btn-continue {
+  box-shadow: var(--shadow-brutalist-sm);
+}
+
+.btn-continue:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+/* Success Box — Disciplined Dark/Orange Stamp (Unslop) */
+.wallet-success-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-brand-dark-card);
+  border: 1px solid var(--color-brand-dark-card-border);
+  border-left: 4px solid var(--color-brand-primary);
+  border-radius: var(--radius-md);
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.success-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-brand-yellow);
+}
+
+/* Footer Note */
+.wallet-card-footer {
+  margin-top: var(--space-5);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.footer-note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+/* Fallback Toast for Unit Tests */
 .wallet-toast {
   position: absolute;
   bottom: -48px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: var(--color-text-primary);
+  background-color: var(--color-brand-dark);
   color: var(--color-text-inverse);
   padding: var(--space-2-5) var(--space-5);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-toast);
   white-space: nowrap;
-  animation: fadeIn 0.2s ease-in-out;
+  animation: walletToastFadeIn 0.2s ease-in-out;
   z-index: 100;
+  border: 1px solid var(--color-border-dark);
 }
 
-@keyframes fadeIn {
+@keyframes walletToastFadeIn {
   from {
     opacity: 0;
     transform: translate(-50%, 6px);

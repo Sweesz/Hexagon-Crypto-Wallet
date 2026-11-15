@@ -72,7 +72,7 @@ Tokens follow a predictable, hierarchical naming convention:
 | **Typography Colors** | `--color-text-[role]` | `--color-text-primary`, `--color-text-muted`, `--color-text-subtle`, `--color-text-inverse` |
 | **Semantic Feedback** | `--color-[intent]-[element/state]` | `--color-success`, `--color-success-bg`, `--color-error-text`, `--color-warning-border` |
 | **Borders** | `--color-border-[variant]` | `--color-border-default`, `--color-border-subtle`, `--color-border-dark` |
-| **Font Families** | `--font-[family]` | `--font-sans`, `--font-display`, `--font-mono` |
+| **Font Families** | `--font-[family]` | `--font-sans` / `--font-standard` (Manrope), `--font-display` / `--font-accent` (20db), `--font-mono` |
 | **Font Sizes** | `--font-size-[scale]` | `--font-size-2xs` (11px), `--font-size-xs` (12px), `--font-size-sm` (13px), `--font-size-md` (14px), `--font-size-lg` (16px), `--font-size-xl` (18px), `--font-size-2xl` (20px), `--font-size-3xl` (22px), `--font-size-display` (32px) |
 | **Font Weights** | `--font-weight-[weight]` | `--font-weight-regular` (400), `--font-weight-medium` (500), `--font-weight-semibold` (600), `--font-weight-bold` (700), `--font-weight-black` (900) |
 | **Border Radii** | `--radius-[scale]` | `--radius-none` (0px), `--radius-xs` (4px), `--radius-sm` (6px), `--radius-md` (8px), `--radius-lg` (10px), `--radius-xl` (12px), `--radius-3xl` (16px), `--radius-pill` (20px), `--radius-full` (50%), `--radius-max` (9999px) |

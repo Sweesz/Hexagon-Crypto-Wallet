@@ -5,6 +5,51 @@
  * Generated from Hexagon Figma design specifications.
  */
 
+/* ==========================================================================
+   Font Definitions (@font-face)
+   Accent: Tupo Vyaz | Standard: Manrope
+   ========================================================================== */
+@font-face {
+  font-family: 'Tupo Vyaz';
+  src: local('Tupo Vyaz'), local('tupo vyaz'), local('TupoVyaz'),
+       local('Тупо Вязь'), local('Tupo-Vyaz'), local('Tupo Vyaz Bold'),
+       local('TupoVyaz-Bold'), local('Tupo Vyaz Variable'),
+       url('/assets/fonts/TupoVyaz.woff2') format('woff2'),
+       url('/assets/fonts/TupoVyaz-Bold.woff2') format('woff2'),
+       url('/assets/fonts/TupoVyaz.woff') format('woff'),
+       url('/assets/fonts/TupoVyaz.otf') format('opentype'),
+       url('/assets/fonts/TupoVyaz.ttf') format('truetype');
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'tupo vyaz';
+  src: local('Tupo Vyaz'), local('tupo vyaz'), local('TupoVyaz'),
+       local('Тупо Вязь'), local('Tupo-Vyaz'), local('Tupo Vyaz Bold'),
+       local('TupoVyaz-Bold'), local('Tupo Vyaz Variable'),
+       url('/assets/fonts/TupoVyaz.woff2') format('woff2'),
+       url('/assets/fonts/TupoVyaz-Bold.woff2') format('woff2'),
+       url('/assets/fonts/TupoVyaz.woff') format('woff'),
+       url('/assets/fonts/TupoVyaz.otf') format('opentype'),
+       url('/assets/fonts/TupoVyaz.ttf') format('truetype');
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: local('Manrope'), local('Manrope Regular'), local('Manrope-Regular'),
+       url('/assets/fonts/Manrope.woff2') format('woff2'),
+       url('/assets/fonts/Manrope.woff') format('woff'),
+       url('/assets/fonts/Manrope.ttf') format('truetype');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* ==========================================================================
      1. Brand Colors & Accents
@@ -66,6 +111,7 @@
   --color-border-default: #cbd5e1;
   --color-border-subtle: #e2e8f0;
   --color-border-dark: #334155;
+  --color-border-black: #000000;
   --color-border-divider: #e2e8f0;
 
   /* Overlay */
@@ -110,8 +156,15 @@
   /* ==========================================================================
      4. Typography
      ========================================================================== */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-display: 'Impact', -apple-system, BlinkMacSystemFont, 'Arial Black', sans-serif;
+  /* Standard / Body: Manrope (Geometric, highly stylized, full Cyrillic support) */
+  --font-standard: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: var(--font-standard);
+
+  /* Accent / Display: Tupo Vyaz */
+  --font-accent: 'Tupo Vyaz', 'tupo vyaz', 'TupoVyaz', 'Тупо Вязь', 'Impact', -apple-system, BlinkMacSystemFont, 'Arial Black', sans-serif;
+  --font-display: var(--font-accent);
+
+  /* Monospace */
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --font-weight-regular: 400;
@@ -209,6 +262,10 @@
   font-weight: var(--font-weight-black);
   line-height: var(--line-height-tight);
   letter-spacing: var(--letter-spacing-tight);
+}
+
+.text-accent {
+  font-family: var(--font-accent);
 }
 
 .text-h1 {
