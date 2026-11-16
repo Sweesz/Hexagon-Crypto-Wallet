@@ -35,6 +35,19 @@ describe('CheckBalance component & helpers', () => {
       expect(formatTonBalance(1234000000n)).toBe('1.234 TON');
       expect(formatTonBalance(10000000000n)).toBe('10 TON');
     });
+
+    it('formatTonBalance formats thousands with commas and handles edge cases (e.g. 1,234.56 TON)', () => {
+      // Specified in ticket task: 1,234.56 TON
+      expect(formatTonBalance(1234560000000n)).toBe('1,234.56 TON');
+      // Large balance with millions
+      expect(formatTonBalance(1000000000000000000n)).toBe('1,000,000,000 TON');
+      // Fractional large balance
+      expect(formatTonBalance(1234567890000000n)).toBe('1,234,567.89 TON');
+      // Very small nano amount (1 nanoTON) without scientific notation
+      expect(formatTonBalance(1n)).toBe('0.000000001 TON');
+      // Small amount with leading zeros in decimals
+      expect(formatTonBalance(1000000001n)).toBe('1.000000001 TON');
+    });
   });
 
   describe('UI and basic interaction', () => {
@@ -102,7 +115,7 @@ describe('CheckBalance component & helpers', () => {
     });
   });
 
-  describe('Acceptance Criteria 2: Uninitialized address shows "0 TON"', () => {
+  describe('Acceptance Criteria 2: Uninitialized address shows "0 TON" & Empty State (Task 4)', () => {
     it('displays "0 TON" (not an error) when getBalance returns 0n', async () => {
       vi.spyOn(balanceModule, 'getBalance').mockResolvedValue(0n);
 
@@ -121,6 +134,49 @@ describe('CheckBalance component & helpers', () => {
       const balanceDisplay = screen.getByTestId('balance-display');
       expect(balanceDisplay.textContent).toContain('0 TON');
       expect(screen.queryByTestId('error-message')).toBeNull();
+    });
+
+    it('renders empty state card with illustration, helpful text and testnet faucet link when balance is 0 TON', async () => {
+      vi.spyOn(balanceModule, 'getBalance').mockResolvedValue(0n);
+
+      render(<CheckBalance />);
+
+      const input = screen.getByPlaceholderText('Enter TON address');
+      const button = screen.getByRole('button', { name: /check balance/i });
+
+      fireEvent.change(input, { target: { value: VALID_TESTNET_ADDRESS } });
+      fireEvent.click(button);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('empty-balance-state')).toBeDefined();
+      });
+
+      const emptyState = screen.getByTestId('empty-balance-state');
+      expect(emptyState.textContent).toContain('Кошелёк пуст (0 TON)');
+
+      const faucetLink = screen.getByTestId('faucet-link') as HTMLAnchorElement;
+      expect(faucetLink).toBeDefined();
+      expect(faucetLink.href).toContain('https://t.me/testgiver_ton_bot');
+      expect(faucetLink.target).toBe('_blank');
+    });
+
+    it('does not render empty state card when balance is positive (> 0 TON)', async () => {
+      vi.spyOn(balanceModule, 'getBalance').mockResolvedValue(5000000000n);
+
+      render(<CheckBalance />);
+
+      const input = screen.getByPlaceholderText('Enter TON address');
+      const button = screen.getByRole('button', { name: /check balance/i });
+
+      fireEvent.change(input, { target: { value: VALID_TESTNET_ADDRESS } });
+      fireEvent.click(button);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('balance-display')).toBeDefined();
+      });
+
+      expect(screen.queryByTestId('empty-balance-state')).toBeNull();
+      expect(screen.getByTestId('balance-display').textContent).toContain('5 TON');
     });
   });
 
@@ -334,6 +390,49 @@ describe('CheckBalance component & helpers', () => {
 
       expect(getBalanceMock).toHaveBeenCalledTimes(3);
       expect(screen.getByTestId('balance-display').textContent).toContain('3 TON');
+    });
+
+    it('renders the auto-refresh indicator badge and applies update animation', async () => {
+      vi.useFakeTimers();
+      vi.spyOn(balanceModule, 'getBalance').mockResolvedValue(5000000000n);
+
+      render(<CheckBalance />);
+
+      const input = screen.getByPlaceholderText('Enter TON address');
+      const button = screen.getByRole('button', { name: /check balance/i });
+
+      fireEvent.change(input, { target: { value: VALID_TESTNET_ADDRESS } });
+      fireEvent.click(button);
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      const indicator = screen.getByTestId('auto-refresh-indicator');
+      expect(indicator).toBeDefined();
+      expect(indicator.textContent).toContain('Auto-refreshes every 30s');
+
+      const balanceCard = screen.getByTestId('balance-display');
+      expect(balanceCard.className).toContain('balance-updated-anim');
+
+      // Fast-forward animation timer (1200ms)
+      await act(async () => {
+        vi.advanceTimersByTime(1200);
+      });
+
+      expect(balanceCard.className).not.toContain('balance-updated-anim');
+    });
+  });
+
+  describe('Design System: Editorial Brutalist UI elements matching CreateWallet', () => {
+    it('renders editorial ribbon banner, live network badge, and card footer', () => {
+      render(<CheckBalance />);
+
+      expect(screen.getByRole('banner')).toBeDefined();
+      expect(screen.getAllByText(/БАЛАНС В РЕАЛЬНОМ ВРЕМЕНИ/i).length).toBeGreaterThan(0);
+      expect(screen.getByText(/СЕТЬ АКТИВНА/i)).toBeDefined();
+      expect(screen.getByRole('heading', { level: 2, name: /CHECK BALANCE/i })).toBeDefined();
+      expect(screen.getByText(/HEXAGON PROTOCOL/i)).toBeDefined();
     });
   });
 });

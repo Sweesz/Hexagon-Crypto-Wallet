@@ -42,7 +42,7 @@
 /* Paper Variant (Editorial Brutalist palette) */
 .card-atomic.card-paper {
   background-color: var(--color-bg-paper-light);
-  border: 1px solid var(--color-bg-paper-divider);
+  border: 2px solid var(--color-border-black);
   box-shadow: var(--shadow-brutalist-md);
 }
 

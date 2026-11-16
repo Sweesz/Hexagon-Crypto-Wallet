@@ -3,6 +3,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { CreateWallet } from '../src/components/CreateWallet';
+import {
+  hasEncryptedWallet,
+  ENCRYPTED_WALLET_STORAGE_KEY,
+  decryptStoredWalletSecrets,
+  encryptAndStoreWalletSecrets,
+} from '../src/wallet/secureStorage';
 
 // Fix cross-realm TypedArray issue in jsdom environment for tweetnacl / @ton/crypto
 if (typeof Uint8Array !== 'undefined') {
@@ -28,7 +34,7 @@ describe('CreateWallet component', () => {
   it('renders initial scaffold correctly with empty fields and enabled generate button', () => {
     render(<CreateWallet />);
 
-    expect(screen.getByText('Create Wallet')).toBeDefined();
+    expect(screen.getByText('CREATE WALLET')).toBeDefined();
 
     const generateBtn = screen.getByTestId('generate-button');
     expect(generateBtn).toBeDefined();
@@ -48,6 +54,10 @@ describe('CreateWallet component', () => {
     const copyBtn = screen.getByTestId('copy-button') as HTMLButtonElement;
     expect(copyBtn).toBeDefined();
     expect(copyBtn.disabled).toBe(true);
+
+    const continueBtn = screen.getByTestId('continue-button') as HTMLButtonElement;
+    expect(continueBtn).toBeDefined();
+    expect(continueBtn.disabled).toBe(true);
   });
 
   it('generates a valid V4R2 address and 24-word mnemonic when clicking "Generate New Wallet"', async () => {
@@ -200,5 +210,191 @@ describe('CreateWallet component', () => {
       const serialized = JSON.stringify(args);
       expect(serialized).not.toContain(mnemonicValue);
     });
+  });
+
+  /* ========================================================================
+     New Issue Acceptance Criteria Tests
+     ======================================================================== */
+
+  it('implements blur-until-confirmed pattern for mnemonic display (Task 3)', async () => {
+    render(<CreateWallet />);
+
+    const generateBtn = screen.getByTestId('generate-button');
+    fireEvent.click(generateBtn);
+
+    const mnemonicTextarea = screen.getByTestId('mnemonic-phrase') as HTMLTextAreaElement;
+    await waitFor(() => {
+      expect(mnemonicTextarea.value).not.toBe('');
+    });
+
+    // Initial state: blur overlay is present and textarea has is-blurred class
+    const blurOverlay = screen.getByTestId('mnemonic-blur-overlay');
+    expect(blurOverlay).toBeDefined();
+    expect(mnemonicTextarea.className).toContain('is-blurred');
+
+    const toggleBtn = screen.getByTestId('toggle-reveal-button');
+    expect(toggleBtn.textContent).toContain('Показать фразу');
+
+    // Click toggle button to reveal
+    fireEvent.click(toggleBtn);
+    expect(screen.queryByTestId('mnemonic-blur-overlay')).toBeNull();
+    expect(mnemonicTextarea.className).not.toContain('is-blurred');
+    expect(toggleBtn.textContent).toContain('Скрыть фразу');
+
+    // Click toggle button again to hide/blur
+    fireEvent.click(toggleBtn);
+    expect(screen.getByTestId('mnemonic-blur-overlay')).toBeDefined();
+    expect(mnemonicTextarea.className).toContain('is-blurred');
+  });
+
+  it('provides visual feedback on copy button (icon/text changes to Copied) (AC 3)', async () => {
+    const writeTextMock = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: writeTextMock,
+      },
+    });
+
+    render(<CreateWallet />);
+
+    const generateBtn = screen.getByTestId('generate-button');
+    fireEvent.click(generateBtn);
+
+    const copyBtn = screen.getByTestId('copy-button') as HTMLButtonElement;
+    await waitFor(() => {
+      expect(copyBtn.disabled).toBe(false);
+    });
+
+    expect(copyBtn.textContent).toContain('Copy to Clipboard');
+
+    fireEvent.click(copyBtn);
+
+    await waitFor(() => {
+      expect(copyBtn.textContent).toContain('Copied to Clipboard!');
+      expect(copyBtn.className).toContain('btn-copy-success');
+    });
+  });
+
+  it('enables Continue button only when "I\'ve saved it" checkbox is checked (Task 4)', async () => {
+    render(<CreateWallet />);
+
+    const continueBtn = screen.getByTestId('continue-button') as HTMLButtonElement;
+    expect(continueBtn.disabled).toBe(true);
+
+    const generateBtn = screen.getByTestId('generate-button');
+    fireEvent.click(generateBtn);
+
+    await waitFor(() => {
+      const mnemonicTextarea = screen.getByTestId('mnemonic-phrase') as HTMLTextAreaElement;
+      expect(mnemonicTextarea.value).not.toBe('');
+    });
+
+    // Still disabled before checking the checkbox
+    expect(continueBtn.disabled).toBe(true);
+
+    const checkbox = screen.getByTestId('confirm-saved-checkbox') as HTMLInputElement;
+    expect(checkbox.checked).toBe(false);
+
+    // Check the checkbox
+    fireEvent.click(checkbox);
+    expect(checkbox.checked).toBe(true);
+    expect(continueBtn.disabled).toBe(false);
+
+    // Uncheck disables it again
+    fireEvent.click(checkbox);
+    expect(checkbox.checked).toBe(false);
+    expect(continueBtn.disabled).toBe(true);
+  });
+
+  it('encrypts and stores wallet data on continue via secureStorage.ts (Task 5 & AC 4)', async () => {
+    render(<CreateWallet />);
+
+    const generateBtn = screen.getByTestId('generate-button');
+    fireEvent.click(generateBtn);
+
+    await waitFor(() => {
+      const mnemonicTextarea = screen.getByTestId('mnemonic-phrase') as HTMLTextAreaElement;
+      expect(mnemonicTextarea.value).not.toBe('');
+    });
+
+    const checkbox = screen.getByTestId('confirm-saved-checkbox');
+    fireEvent.click(checkbox);
+
+    const passwordInput = screen.getByTestId('wallet-encryption-password') as HTMLInputElement;
+    fireEvent.change(passwordInput, { target: { value: 'SecretMasterPassword123!' } });
+
+    const continueBtn = screen.getByTestId('continue-button');
+    fireEvent.click(continueBtn);
+
+    // Should store encrypted wallet in localStorage
+    await waitFor(
+      () => {
+        expect(hasEncryptedWallet()).toBe(true);
+      },
+      { timeout: 5000 }
+    );
+
+    // Verify stored data is properly encrypted and decryptable with the password
+    const rawEnvelope = localStorage.getItem(ENCRYPTED_WALLET_STORAGE_KEY);
+    expect(rawEnvelope).toBeTruthy();
+
+    const decrypted = await decryptStoredWalletSecrets('SecretMasterPassword123!');
+    const mnemonicTextarea = screen.getByTestId('mnemonic-phrase') as HTMLTextAreaElement;
+    expect(decrypted.mnemonic).toBe(mnemonicTextarea.value);
+
+    // Toast feedback appears
+    const toast = await screen.findByTestId('wallet-toast');
+    expect(toast.textContent).toContain('Wallet encrypted and saved successfully!');
+  });
+
+  it('validates password requirement before encryption on continue (Task 6)', async () => {
+    render(<CreateWallet />);
+
+    const generateBtn = screen.getByTestId('generate-button');
+    fireEvent.click(generateBtn);
+
+    await waitFor(() => {
+      const mnemonicTextarea = screen.getByTestId('mnemonic-phrase') as HTMLTextAreaElement;
+      expect(mnemonicTextarea.value).not.toBe('');
+    });
+
+    const checkbox = screen.getByTestId('confirm-saved-checkbox');
+    fireEvent.click(checkbox);
+
+    // Leave password empty and click continue
+    const continueBtn = screen.getByTestId('continue-button');
+    fireEvent.click(continueBtn);
+
+    await waitFor(() => {
+      expect(hasEncryptedWallet()).toBe(false);
+    });
+
+    const toast = await screen.findByTestId('wallet-toast');
+    expect(toast.textContent).toContain('A non-empty password is required.');
+  });
+
+  it('detects persisted wallet on refresh and allows reset (AC 4)', async () => {
+    // Seed encrypted wallet in localStorage before rendering (simulating refreshed browser)
+    await encryptAndStoreWalletSecrets(
+      'TestPassword123',
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
+      new Uint8Array(32).fill(1)
+    );
+
+    expect(hasEncryptedWallet()).toBe(true);
+
+    render(<CreateWallet />);
+
+    // Persisted banner should be visible
+    const persistedBanner = screen.getByTestId('wallet-persisted-banner');
+    expect(persistedBanner).toBeDefined();
+    expect(persistedBanner.textContent).toContain('Зашифрованный кошелёк сохранён');
+
+    // Reset button clears persisted wallet
+    const resetBtn = screen.getByTestId('reset-wallet-button');
+    fireEvent.click(resetBtn);
+
+    expect(hasEncryptedWallet()).toBe(false);
+    expect(screen.queryByTestId('wallet-persisted-banner')).toBeNull();
   });
 });
